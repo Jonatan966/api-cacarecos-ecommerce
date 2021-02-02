@@ -19,7 +19,7 @@ async function createUser(req: INewRequest, res: NowResponse) {
     if (!Object.keys({...await User.findOne({email})}).length) {
       password = await bcrypt.hash(password, 7);
 
-      const result = await User.create({name, email, password, created_at: Date.now()});
+      const result = await User.create({name, email, password, created_at: Date.now()}) as any;
 
       return res.status(201).json({_id: result._id, created_at: result.created_at});
     }

@@ -5,6 +5,10 @@ export default function DbMiddleware(func: (req: NowRequest, res: NowResponse) =
     return async (req: NowRequest, res: NowResponse) => {
         await connectToDatabase();
         
+        if (req.method === 'OPTIONS') {
+            return res.status(200).end();
+        }
+
         return func(req, res);
     }
 }

@@ -1,13 +1,17 @@
 import { NowRequest, NowResponse } from "@vercel/node";
 import { isValidObjectId } from "mongoose";
-import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 
+import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Product from "../../src/schema/Product";
 import { INewRequest } from "../../src/utils/interfaces";
+import { parseQueryParams } from "../../src/utils/parsers";
+
 
 async function getAllProducts(req: NowRequest, res: NowResponse) {
-  const products = await Product.find().populate('category');
+  let newQuery = parseQueryParams(req.query, Object.keys(Product.schema.paths));
+
+  const products = await Product.find({}, newQuery).populate('category');
 
   return res.status(200).json(products);
 }

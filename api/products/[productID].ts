@@ -5,12 +5,14 @@ import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Product from "../../src/schema/Product";
 import { INewRequest } from "../../src/utils/interfaces";
+import { parseQueryParams } from "../../src/utils/parsers";
 
 async function showProduct(req: NowRequest, res: NowResponse) {
   const productID = req.query.productID;
+  const fieldDelimiter = parseQueryParams(req.query, Object.keys(Product.schema.paths));
 
   if (isValidObjectId(productID)) {
-    const product = await Product.findOne({_id: productID}).populate('category');
+    const product = await Product.findOne({_id: productID}, fieldDelimiter).populate('category');
     
     return res.status(200).json(product);
   }

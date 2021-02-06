@@ -5,12 +5,14 @@ import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Category from "../../src/schema/Category";
 import { INewRequest } from "../../src/utils/interfaces";
+import { parseQueryParams } from "../../src/utils/parsers";
 
 async function showCategory(req: NowRequest, res: NowResponse) {
+  const fieldDelimiter = parseQueryParams(req.query, Object.keys(Category.schema.paths));
   const categoryId = req.query.categoryId;
 
   if (isValidObjectId(categoryId)) {
-    const result = await Category.findOne({_id: categoryId});
+    const result = await Category.findOne({_id: categoryId}, fieldDelimiter);
     return res.status(200).json(result);
   }
 

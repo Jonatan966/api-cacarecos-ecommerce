@@ -19,3 +19,17 @@ export function parseQueryParams(query, acceptOnly: string[]) {
 
   return newQuery;
 }
+
+export function parsePaginator(page: any, limit: any, max_results: number = 15) {
+  let finalResult = {skip: 0, limit: 15};
+
+  if (!isNaN(page) && page > 0) {
+    finalResult.skip = max_results * Number(page);
+  }
+
+  if (!isNaN(limit) && limit > 0 && limit <= max_results) {
+    finalResult.limit = Number(limit);
+  }
+
+  return finalResult;
+}

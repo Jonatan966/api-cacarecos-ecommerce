@@ -4,11 +4,11 @@ import authMiddleware from "../../src/middlewares/AuthMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import { INewRequest } from "../../src/utils/interfaces";
 import Category from '../../src/schema/Category';
-import { parseQueryParams } from "../../src/utils/parsers";
+import { parsePaginator, parseQueryParams } from "../../src/utils/parsers";
 
 async function showAllCategories(req: NowRequest, res: NowResponse) {
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(Category.schema.paths));
-  const result = await Category.find({}, fieldDelimiter);
+  const result = await Category.find({}, fieldDelimiter, parsePaginator(req.query.page, req.query.max_results));
 
   return res.status(200).json(result);
 }

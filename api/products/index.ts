@@ -5,13 +5,15 @@ import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Product from "../../src/schema/Product";
 import { INewRequest } from "../../src/utils/interfaces";
-import { parseQueryParams } from "../../src/utils/parsers";
+import { parsePaginator, parseQueryParams } from "../../src/utils/parsers";
 
 
 async function getAllProducts(req: NowRequest, res: NowResponse) {
   let newQuery = parseQueryParams(req.query, Object.keys(Product.schema.paths));
 
-  const products = await Product.find({}, newQuery).populate('category');
+  const products = await Product.find({}, newQuery, 
+    parsePaginator(req.query.page, req.query.max_results)
+  ).populate('category');
 
   return res.status(200).json(products);
 }

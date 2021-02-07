@@ -1,15 +1,16 @@
 export function parseQueryParams(query, acceptOnly: string[]) {
+  let oldQuery = {...query};
   let newQuery = {};
 
-  Object.keys(query).forEach(item => {
+  Object.keys(oldQuery).forEach(item => {
     if (!(acceptOnly.findIndex(obj => obj === item) + 1)) {
-      delete query[item];
+      delete oldQuery[item];
     }
   });
 
-  if (Object.keys(query).length) {
+  if (Object.keys(oldQuery).length) {
     acceptOnly.forEach(item => {
-      if (Number(query[item]) === 1) {
+      if (Number(oldQuery[item]) === 1) {
         return;
       }
       newQuery[item] = 0;  

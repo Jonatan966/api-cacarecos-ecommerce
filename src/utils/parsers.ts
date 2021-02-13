@@ -34,18 +34,28 @@ export function parsePaginator(page: any, limit: any, max_results: number = 15) 
   return finalResult;
 }
 
-export function parseSearchFilter(query: any, acceptOnly: string[], notUseRegexQuery?: string[]) {
-  const {find_by, find_query} = query;
+export function parseSearchFilter(query: any, acceptOnly: string[], notUseRegexQuery: string[] = []) {
+  let {find_by, find_query} = query;
   let finalFilter = {};
 
   if (find_by && find_query) {
-    const item = acceptOnly.find(item => item === find_by);
-    if (item) {
-      finalFilter[item] = 
-        !!notUseRegexQuery.find(queryItem => queryItem === item) 
-        ? find_query 
-        : {$regex: `.*${find_query}.*`};
-    }  
+    find_by = find_by.split("|");
+    find_query = find_query.split("|");
+
+    if (find_by.length === find_query.length) {
+      find_by.forEach((find_item, find_index) => {
+        if (!acceptOnly.find(item => item === find_item)) {
+          delete find_by[find_index];
+          delete find_query[find_index];
+          return;
+        }
+
+        finalFilter[find_item] = 
+        !!notUseRegexQuery.find(queryItem => queryItem === find_item) 
+        ? find_query[find_index] 
+        : {$regex: `.*${find_query[find_index]}.*`};
+      });
+    }
   }
 
   return finalFilter;

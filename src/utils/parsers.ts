@@ -1,3 +1,6 @@
+import { NowRequest } from "@vercel/node";
+import multiparty from 'multiparty';
+
 export function parseQueryParams(query, acceptOnly: string[]) {
   let oldQuery = {...query};
   let newQuery = {};
@@ -59,4 +62,22 @@ export function parseSearchFilter(query: any, acceptOnly: string[], notUseRegexQ
   }
 
   return finalFilter;
+}
+
+export function parseMultipartForm(req: NowRequest) {
+  const form = new multiparty.Form();
+
+  return new Promise((resolve, reject) => {
+    form.parse(req, (error, fields, files) => {
+      if (!error) {
+        let final = {
+          body: fields,
+          files: files.file
+        };
+        resolve(final);
+        return;
+      }
+      reject(error);
+    });
+  });
 }

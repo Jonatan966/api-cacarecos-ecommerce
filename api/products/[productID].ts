@@ -1,20 +1,26 @@
 import { NowRequest, NowResponse } from "@vercel/node";
 import { isValidObjectId } from "mongoose";
+import connectToFirestore from "../../src/connectors/FirestoreConnector";
 
 import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Product from "../../src/schema/Product";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams } from "../../src/utils/parsers";
+import ProductImageUploader from "../../src/utils/productImageUploader";
 
 async function showProduct(req: NowRequest, res: NowResponse) {
   const productID = req.query.productID;
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(Product.schema.paths));
 
   if (isValidObjectId(productID)) {
-    const product = await Product.findOne({_id: productID}, fieldDelimiter, 
+    let product = await Product.findOne({_id: productID}, fieldDelimiter, 
       parsePaginator(req.query.page, req.query.max_results)
     ).populate('category');
+
+    if (product._id) {
+      product = (await ProductImageUploader.addImagesToProductsQuery([product]))[0];
+    }
     
     return res.status(200).json(product);
   }

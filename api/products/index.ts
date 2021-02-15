@@ -14,9 +14,11 @@ async function getAllProducts(req: NowRequest, res: NowResponse) {
   let newQuery = parseQueryParams(req.query, Object.keys(Product.schema.paths));
   let newFilter = parseSearchFilter(req.query, ['name', 'description', 'category'], ['category']);
 
-  const products = await Product.find(newFilter, newQuery, 
+  let products = await Product.find(newFilter, newQuery, 
     parsePaginator(req.query.page, req.query.max_results)
   ).populate('category');
+
+  products = await ProductImageUploader.addImagesToProductsQuery(products);
 
   return res.status(200).json(products);
 }

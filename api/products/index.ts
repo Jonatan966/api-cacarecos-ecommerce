@@ -1,11 +1,13 @@
 import { NowRequest, NowResponse } from "@vercel/node";
 import { isValidObjectId } from "mongoose";
+import connectToFirestore from "../../src/connectors/FirestoreConnector";
 
 import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Product from "../../src/schema/Product";
 import { INewRequest } from "../../src/utils/interfaces";
-import { parsePaginator, parseQueryParams, parseSearchFilter } from "../../src/utils/parsers";
+import { parseMultipartForm, parsePaginator, parseQueryParams, parseSearchFilter } from "../../src/utils/parsers";
+import ProductImageUploader from "../../src/utils/productImageUploader";
 
 
 async function getAllProducts(req: NowRequest, res: NowResponse) {
@@ -20,23 +22,37 @@ async function getAllProducts(req: NowRequest, res: NowResponse) {
 }
 
 async function addProduct(req: INewRequest, res: NowResponse) {
-  const {name, description, category, price, units} = req.body;
-  
-  if (name && description && isValidObjectId(category) && price && units) {
-    const result = await Product.create({
-      name, 
-      description, 
-      category, 
-      price, 
-      units, 
-      created_at: Date.now(),
-      updated_at: Date.now(),
-    });
+  const {body, files, error} = await parseMultipartForm(req, 'images') as {body: any, files: File[], error?: Error};
 
-    if (result) return res.status(200).json(result);
+  if (!error && body && files) {
+    const {name, description, category, price, units} = body;
+
+    if (name && description && isValidObjectId(category) && price && units) {
+      const result = await Product.create({
+        name, 
+        description, 
+        category, 
+        price, 
+        units, 
+        created_at: Date.now(),
+        updated_at: Date.now(),
+      });  
+
+      if (result._id) {
+        const prd = new ProductImageUploader(String(result._id), await connectToFirestore());
+        const imageUploadErrors = await prd.uploadImages(files);
+
+        if (!imageUploadErrors.length) {
+          return res.status(201).end();
+        }
+        return res.status(400).json({upload_errors: imageUploadErrors});
+      }
+
+      return res.status(500).json({error: 'NÃO FOI POSSÍVEL CONCLUIR O CADASTRO'});
+    }
   }
 
-  return res.status(400).json({error: 'HÁ CAMPOS FALTANDO'});  
+  return res.status(400).json({error: 'HÁ CAMPOS FALTANDO'});
 }
 
 export default DbMiddleware(async (req, res) => {

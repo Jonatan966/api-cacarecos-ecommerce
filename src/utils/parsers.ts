@@ -64,20 +64,25 @@ export function parseSearchFilter(query: any, acceptOnly: string[], notUseRegexQ
   return finalFilter;
 }
 
-export function parseMultipartForm(req: NowRequest) {
+export function parseMultipartForm(req: NowRequest, files_field_name: string = '') {
   const form = new multiparty.Form();
 
   return new Promise((resolve, reject) => {
     form.parse(req, (error, fields, files) => {
+      let final = {body: null, files: null, error: null}
       if (!error) {
-        let final = {
-          body: fields,
-          files: files.file
-        };
+        Object.keys(fields).forEach(item => 
+          fields[item] = fields[item].join()
+        );
+
+        final.body = fields;
+        final.files = files[files_field_name];
         resolve(final);
         return;
       }
-      reject(error);
+
+      final.error = error;
+      reject(final);
     });
   });
 }

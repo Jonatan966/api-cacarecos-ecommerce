@@ -1,6 +1,7 @@
 import { Bucket } from "@google-cloud/storage";
 import fs from 'fs';
 import path from 'path';
+import connectToFirestore from "../connectors/FirestoreConnector";
 
 class ProductImageUploader {
   productID: string;
@@ -55,6 +56,15 @@ class ProductImageUploader {
     
     return imageLinks;
   }
+
+  static async addImagesToProductsQuery(products: any[]) {
+    const bucket = await connectToFirestore();
+    for(let x = 0; x < products.length; x++) {
+      const connector = new ProductImageUploader(String(products[x]._id), bucket);
+      products[x] = {images: await connector.getProductImages(), ...products[x].toJSON()};
+    }
+    return products;
+  }  
 }
 
 export default ProductImageUploader;

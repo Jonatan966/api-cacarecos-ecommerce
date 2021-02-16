@@ -9,14 +9,19 @@ import { parsePaginator, parseQueryParams, parseSearchFilter } from "../../src/u
 
 
 async function getAllProducts(req: NowRequest, res: NowResponse) {
-  let newQuery = parseQueryParams(req.query, Object.keys(Product.schema.paths));
-  let newFilter = parseSearchFilter(req.query, ['name', 'description', 'category'], ['category']);
-
-  const products = await Product.find(newFilter, newQuery, 
-    parsePaginator(req.query.page, req.query.max_results)
-  ).populate('category');
-
-  return res.status(200).json(products);
+  try {
+    let newQuery = parseQueryParams(req.query, Object.keys(Product.schema.paths));
+    let newFilter = parseSearchFilter(req.query, ['name', 'description', 'category'], ['category']);
+  
+    const products = await Product.find(newFilter, newQuery, 
+      parsePaginator(req.query.page, req.query.max_results)
+    ).populate('category');
+  
+    return res.status(200).json(products);  
+  }
+  catch {
+    return res.status(200).json([]);
+  }
 }
 
 async function addProduct(req: INewRequest, res: NowResponse) {

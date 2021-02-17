@@ -14,7 +14,7 @@ export default DbMiddleware(async (req, res) => {
             if (await bcrypt.compare(password, user.password)) {
                 const token = jwt.sign({_id: user._id, admin: !!user.admin}, process.env.JWT_SECRET, {expiresIn: '3d'});
     
-                return res.status(200).json({token});
+                return res.status(200).json({token, admin: !!user.admin});
             }    
         }
         return res.status(400).json({error: 'USUÁRIO E/OU SENHA INCORRETOS'});

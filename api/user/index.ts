@@ -9,7 +9,7 @@ import { parseQueryParams } from "../../src/utils/parsers";
 
 async function showUser(req: INewRequest, res: NowResponse) {
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(User.schema.paths));
-  const user = await User.findOne(req.user._id, {...fieldDelimiter, password: 0});
+  const user = await User.findOne(req.user._id, {...fieldDelimiter, password: 0, _id: 0});
   
   return res.status(200).json(user);
 }

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import User from "../../src/schema/User";
+import errorList from '../../src/utils/errorList';
 import { IUserProps } from '../../src/utils/interfaces';
 
 export default DbMiddleware(async (req, res) => {
@@ -17,7 +18,7 @@ export default DbMiddleware(async (req, res) => {
                 return res.status(200).json({token, admin: !!user.admin});
             }    
         }
-        return res.status(400).json({error: 'USUÁRIO E/OU SENHA INCORRETOS'});
+        return res.status(400).json(errorList.LOGIN_INCORRETO);
     }
-    return res.status(401).json(null);
+    return res.status(401).json(errorList.PERMISSAO_NEGADA);
 });

@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import User from "../../src/schema/User";
+import errorList from "../../src/utils/errorList";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parseQueryParams } from "../../src/utils/parsers";
 
@@ -25,9 +26,9 @@ async function createUser(req: INewRequest, res: NowResponse) {
 
       return res.status(201).json({_id: result._id, created_at: result.created_at});
     }
-    return res.status(400).json({error: 'EMAIL JÁ CADASTRADO'});
+    return res.status(400).json(errorList.EMAIL_CADASTRADO);
   }
-  return res.status(400).json({error: 'HÁ CAMPOS FALTANDO'});
+  return res.status(400).json(errorList.CAMPOS_FALTANDO);
 }
 
 export default DbMiddleware(async (req, res) => {

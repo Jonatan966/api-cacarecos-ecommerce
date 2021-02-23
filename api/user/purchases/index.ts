@@ -2,6 +2,7 @@ import { NowResponse } from "@vercel/node";
 import authMiddleware from "../../../src/middlewares/AuthMiddleware";
 import DbMiddleware from "../../../src/middlewares/DbMiddleware";
 import { Order, OrderProducts, Product } from "../../../src/schema";
+import errorList from "../../../src/utils/errorList";
 import { INewRequest } from "../../../src/utils/interfaces";
 
 
@@ -46,13 +47,13 @@ async function checkout(req: INewRequest, res: NowResponse) {
         }
       }
 
-      return res.status(400).json({error: 'UNIDADES INSUFICIENTES'});
+      return res.status(400).json(errorList.ESTOQUE_INSUFICIENTE);
     }
 
-    return res.status(400).json({error: 'UM OU MAIS PRODUTOS INEXISTENTES'});
+    return res.status(400).json(errorList.PRODUTOS_INEXISTENTES);
   }
 
-  return res.status(400).json({error: 'HÁ PRODUTOS FALTANDO'});
+  return res.status(400).json(errorList.CAMPOS_FALTANDO);
 }
 
 export default DbMiddleware(async (req, res) => {

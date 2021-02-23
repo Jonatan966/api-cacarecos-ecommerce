@@ -4,6 +4,7 @@ import { isValidObjectId } from "mongoose";
 import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Product from "../../src/schema/Product";
+import errorList from "../../src/utils/errorList";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams } from "../../src/utils/parsers";
 
@@ -19,7 +20,7 @@ async function showProduct(req: NowRequest, res: NowResponse) {
     return res.status(200).json(product);
   }
 
-  return res.status(400).json({error: 'ITEM NÃO ENCONTRADO'});
+  return res.status(400).json(errorList.ID_INVALIDO);
 }
 
 async function deleteProduct(req: INewRequest, res: NowResponse) {
@@ -33,7 +34,7 @@ async function deleteProduct(req: INewRequest, res: NowResponse) {
     }
   }
 
-  return res.status(400).json({error: 'ITEM NÃO ENCONTRADO'});
+  return res.status(400).json(errorList.ID_INVALIDO);
 }
 
 async function editProduct(req: INewRequest, res: NowResponse) {
@@ -53,10 +54,10 @@ async function editProduct(req: INewRequest, res: NowResponse) {
       return res.status(200).json(null);
     }
 
-    return res.status(500).json({error: 'OCORREU UM ERRO AO TENTAR EXECUTAR ESSA OPERAÇÃO'});
+    return res.status(500).json(errorList.OPERACAO_NAO_EXECUTADA);
   }
 
-  return res.status(400).json({error: 'ID INVÁLIDO'});
+  return res.status(400).json(errorList.ID_INVALIDO);
 }
 
 export default DbMiddleware(async (req, res) => {
@@ -68,6 +69,6 @@ export default DbMiddleware(async (req, res) => {
     case 'DELETE':
       return await adminMiddleware(req, res, deleteProduct);     
     default:
-      return res.status(401).json(null);
+      return res.status(401).json(errorList.PERMISSAO_NEGADA);
   }
 });

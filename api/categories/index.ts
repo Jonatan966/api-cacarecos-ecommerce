@@ -6,6 +6,7 @@ import { INewRequest } from "../../src/utils/interfaces";
 import Category from '../../src/schema/Category';
 import { parsePaginator, parseQueryParams, parseSearchFilter } from "../../src/utils/parsers";
 import adminMiddleware from "../../src/middlewares/AdminMiddleware";
+import errorList from "../../src/utils/errorList";
 
 async function showAllCategories(req: NowRequest, res: NowResponse) {
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(Category.schema.paths));
@@ -36,6 +37,6 @@ export default DbMiddleware(async (req, res) => {
     case 'POST':
       return await adminMiddleware(req, res, addCategory);
     default:
-      return res.status(401).json(null);
+      return res.status(401).json(errorList.PERMISSAO_NEGADA);
   }
 });

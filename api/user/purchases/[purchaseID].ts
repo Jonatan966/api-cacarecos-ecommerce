@@ -3,6 +3,7 @@ import adminMiddleware from "../../../src/middlewares/AdminMiddleware";
 import authMiddleware from "../../../src/middlewares/AuthMiddleware";
 import DbMiddleware from "../../../src/middlewares/DbMiddleware";
 import { Order, OrderProducts } from "../../../src/schema";
+import errorList from "../../../src/utils/errorList";
 import { INewRequest } from "../../../src/utils/interfaces";
 
 async function showPurchase(req: INewRequest, res: NowResponse) {
@@ -23,7 +24,7 @@ async function cancelOrder(req: INewRequest, res: NowResponse) {
         return res.status(200).json(result);
     }
 
-    return res.status(400).json({error: 'PEDIDO NÃO ENCONTRADO'});
+    return res.status(400).json(errorList.REGISTRO_NAO_ENCONTRADO);
 }
 
 async function finishOrder(req: INewRequest, res: NowResponse) {
@@ -35,7 +36,7 @@ async function finishOrder(req: INewRequest, res: NowResponse) {
         return res.status(200).json(result);
     }
 
-    return res.status(400).json({error: 'PEDIDO NÃO ENCONTRADO'});
+    return res.status(400).json(errorList.REGISTRO_NAO_ENCONTRADO);
 }
 
 export default DbMiddleware(async (req, res) => {
@@ -47,6 +48,6 @@ export default DbMiddleware(async (req, res) => {
         case 'POST':
             return await adminMiddleware(req, res, finishOrder);
         default:
-            return res.status(401).json(null);
+            return res.status(401).json(errorList.PERMISSAO_NEGADA);
     }
 });

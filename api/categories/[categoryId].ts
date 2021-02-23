@@ -4,6 +4,7 @@ import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Category from "../../src/schema/Category";
+import errorList from "../../src/utils/errorList";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams } from "../../src/utils/parsers";
 
@@ -18,7 +19,7 @@ async function showCategory(req: NowRequest, res: NowResponse) {
     return res.status(200).json(result);
   }
 
-  return res.status(400).json(null);
+  return res.status(400).json(errorList.ID_INVALIDO);
 }
 
 async function editCategory(req: INewRequest, res: NowResponse) {
@@ -29,7 +30,7 @@ async function editCategory(req: INewRequest, res: NowResponse) {
     return res.status(200).json(result);
   }
 
-  return res.status(400).json(null);
+  return res.status(400).json(errorList.CAMPOS_FALTANDO);
 }
 
 export default DbMiddleware(async (req, res) => {
@@ -39,6 +40,6 @@ export default DbMiddleware(async (req, res) => {
     case 'POST':
       return await adminMiddleware(req, res, editCategory);
     default:
-      return res.status(401).json(null);
+      return res.status(401).json(errorList.PERMISSAO_NEGADA);
   }
 });

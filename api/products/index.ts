@@ -4,6 +4,7 @@ import { isValidObjectId } from "mongoose";
 import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Product from "../../src/schema/Product";
+import errorList from "../../src/utils/errorList";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams, parseSearchFilter } from "../../src/utils/parsers";
 
@@ -41,7 +42,7 @@ async function addProduct(req: INewRequest, res: NowResponse) {
     if (result) return res.status(200).json(result);
   }
 
-  return res.status(400).json({error: 'HÁ CAMPOS FALTANDO'});  
+  return res.status(400).json(errorList.CAMPOS_FALTANDO);  
 }
 
 export default DbMiddleware(async (req, res) => {
@@ -53,6 +54,6 @@ export default DbMiddleware(async (req, res) => {
       return await adminMiddleware(req, res, addProduct);
 
     default:
-      return res.status(401).json(null);
+      return res.status(401).json(errorList.PERMISSAO_NEGADA);
   }
 });

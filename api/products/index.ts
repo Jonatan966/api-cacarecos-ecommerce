@@ -28,7 +28,7 @@ async function getAllProducts(req: NowRequest, res: NowResponse) {
 async function addProduct(req: INewRequest, res: NowResponse) {
   const {name, description, category, price, units} = req.body;
   
-  if (name && description && isValidObjectId(category) && price && units) {
+  if (name && description && isValidObjectId(category) && category && price && units) {
     const result = await Product.create({
       name, 
       description, 

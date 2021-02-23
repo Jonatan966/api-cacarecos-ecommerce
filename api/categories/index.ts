@@ -5,6 +5,7 @@ import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import { INewRequest } from "../../src/utils/interfaces";
 import Category from '../../src/schema/Category';
 import { parsePaginator, parseQueryParams, parseSearchFilter } from "../../src/utils/parsers";
+import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 
 async function showAllCategories(req: NowRequest, res: NowResponse) {
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(Category.schema.paths));
@@ -20,16 +21,12 @@ async function showAllCategories(req: NowRequest, res: NowResponse) {
 async function addCategory(req: INewRequest, res: NowResponse) {
   const {name} = req.body;
 
-  if (req.user.admin) {
-    const item = await Category.create({
-      name, 
-      color: [Math.ceil(Math.random() * 360), 100, 86]
-    });
-  
-    return res.status(201).json(item);  
-  }
+  const item = await Category.create({
+    name, 
+    color: [Math.ceil(Math.random() * 360), 100, 86]
+  });
 
-  return res.status(401).json(null);
+  return res.status(201).json(item);  
 }
 
 export default DbMiddleware(async (req, res) => {
@@ -37,7 +34,7 @@ export default DbMiddleware(async (req, res) => {
     case 'GET':
       return await showAllCategories(req, res);
     case 'POST':
-      return await authMiddleware(req, res, addCategory);
+      return await adminMiddleware(req, res, addCategory);
     default:
       return res.status(401).json(null);
   }

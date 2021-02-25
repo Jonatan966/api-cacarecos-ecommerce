@@ -1,4 +1,4 @@
-import {writeFile, readFileSync} from 'fs';
+import {writeFile, readFileSync, existsSync, mkdirSync} from 'fs';
 import path from 'path';
 import {Storage, Bucket} from '@google-cloud/storage';
 
@@ -14,13 +14,18 @@ function establishConnection() {
 }
 
 function createTemporaryKeyFile() {
-  const filePath = path.join(__dirname, '..', '..', 'tmp', 'firebase-private-keys.json');
+  const tempPath = path.join(__dirname, '..', '..', 'tmp');
+  const filePath = path.join(tempPath, 'firebase-private-keys.json');
 
   return new Promise((resolve, reject) => {
     try {
       const file = readFileSync(filePath);
       resolve(true);
     } catch {
+      if (!existsSync(tempPath)) {
+        mkdirSync(tempPath);
+      }
+
       writeFile(filePath, process.env.FIREBASE_FILE_KEYS, {encoding: 'utf-8'}, writeError => {
         if (!writeError) {
           resolve(true);

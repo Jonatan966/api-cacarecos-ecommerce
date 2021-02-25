@@ -22,6 +22,8 @@
     "typescript": "^4.1.3"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "tsc && node .",
+    "start": "node ."
   }
 }

@@ -1,8 +1,8 @@
-import { NowRequest, NowResponse } from "@vercel/node";
+import {Request, Response} from 'express';
 import connectToDatabase from "../connectors/DatabaseConnector";
 
-export default function DbMiddleware(func: (req: NowRequest, res: NowResponse) => any) {
-    return async (req: NowRequest, res: NowResponse) => {
+export default function DbMiddleware(func: (req: Request, res: Response) => any) {
+    return async (req: Request, res: Response) => {
         await connectToDatabase();
         
         if (req.method === 'OPTIONS') {

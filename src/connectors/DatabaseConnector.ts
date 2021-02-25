@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import {Category, Order, Product, User} from '../schema';
 
 mongoose.Promise = global.Promise;
-let isConnected;
+let isConnected: number;
 
 function loadSchemas() {
     User;

@@ -1,4 +1,4 @@
-import { NowResponse } from "@vercel/node";
+import {Response} from 'express';
 import { INewRequest, IUserProps } from "../utils/interfaces";
 import jwt from 'jsonwebtoken';
 
@@ -14,7 +14,7 @@ function checkToken(token: string) {
     }
 }
 
-export default async function authMiddleware(req: INewRequest, res: NowResponse, func: (req: INewRequest, res: NowResponse) => any) {
+export default async function authMiddleware(req: INewRequest, res: Response, func: (req: INewRequest, res: Response) => any) {
     let token = req.headers.authorization;
     if (token && token.includes('Bearer ')) {
         token = token.split(' ')[1];

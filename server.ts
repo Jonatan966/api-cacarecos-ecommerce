@@ -1,9 +1,9 @@
 import express from 'express';
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 
 import defineRoutes from './src/utils/defineRoutes';
 
-dotenv.config();
+//dotenv.config();
 
 const server = express();
 

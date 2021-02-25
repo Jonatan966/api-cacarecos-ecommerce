@@ -86,3 +86,21 @@ export function parseMultipartForm(req: Request, files_field_name: string = '') 
     });
   });
 }
+
+
+export function parseRoutes(routes: string[]) {
+  routes = routes.map(item => {
+    item = item.replace('.ts', '');
+
+    if (item.includes('index')) {
+      item = item.replace('/index', '');
+    }
+    else if (item.includes('[')) {
+      item = item.replace('[', ':').replace(']', '');
+    }
+
+    return item;
+  });
+
+  return routes;
+}

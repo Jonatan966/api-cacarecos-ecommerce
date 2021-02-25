@@ -1,4 +1,4 @@
-import { NowResponse } from "@vercel/node";
+import {Response} from 'express';
 import bcrypt from 'bcrypt';
 
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
@@ -7,14 +7,14 @@ import User from "../../src/schema/User";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parseQueryParams } from "../../src/utils/parsers";
 
-async function showUser(req: INewRequest, res: NowResponse) {
+async function showUser(req: INewRequest, res: Response) {
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(User.schema.paths));
   const user = await User.findOne(req.user._id, {...fieldDelimiter, password: 0});
   
   return res.status(200).json(user);
 }
 
-async function createUser(req: INewRequest, res: NowResponse) {
+async function createUser(req: INewRequest, res: Response) {
   let {name, email, password} = req.body;
 
   if (name && email && password) {

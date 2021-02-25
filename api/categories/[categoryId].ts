@@ -1,15 +1,15 @@
-import { NowRequest, NowResponse } from "@vercel/node";
 import { isValidObjectId } from "mongoose";
-import adminMiddleware from "../../src/middlewares/AdminMiddleware";
+import {Response, Request} from 'express';
 
+import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Category from "../../src/schema/Category";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams } from "../../src/utils/parsers";
 
-async function showCategory(req: NowRequest, res: NowResponse) {
+async function showCategory(req: Request, res: Response) {
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(Category.schema.paths));
-  const categoryId = req.query.categoryId;
+  const categoryId = req.params.categoryId;
 
   if (isValidObjectId(categoryId)) {
     const result = await Category.findOne({_id: categoryId}, fieldDelimiter, 
@@ -21,7 +21,7 @@ async function showCategory(req: NowRequest, res: NowResponse) {
   return res.status(400).json(null);
 }
 
-async function editCategory(req: INewRequest, res: NowResponse) {
+async function editCategory(req: INewRequest, res: Response) {
   const [{name}, categoryId] = [req.body, req.query.categoryId];
 
   if (name) {

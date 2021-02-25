@@ -1,11 +1,11 @@
-import { NowResponse } from "@vercel/node";
+import {Request, Response} from 'express';
 import adminMiddleware from "../../../src/middlewares/AdminMiddleware";
 import authMiddleware from "../../../src/middlewares/AuthMiddleware";
 import DbMiddleware from "../../../src/middlewares/DbMiddleware";
 import { Order, OrderProducts } from "../../../src/schema";
 import { INewRequest } from "../../../src/utils/interfaces";
 
-async function showPurchase(req: INewRequest, res: NowResponse) {
+async function showPurchase(req: INewRequest, res: Response) {
     let order = await Order.findOne({_id: req.query.purchaseID, user_id: req.user._id}, {user_id: 0});
     let order_products = await OrderProducts.find({order_id: order._id}, {order_id: 0});
     
@@ -14,7 +14,7 @@ async function showPurchase(req: INewRequest, res: NowResponse) {
     return res.status(200).json(order);
 }
 
-async function cancelOrder(req: INewRequest, res: NowResponse) {
+async function cancelOrder(req: INewRequest, res: Response) {
     const order = await Order.findOne({_id: req.query.purchaseID, status: {$eq: [0,1]}});
     
     if(order) {
@@ -26,7 +26,7 @@ async function cancelOrder(req: INewRequest, res: NowResponse) {
     return res.status(400).json({error: 'PEDIDO NÃO ENCONTRADO'});
 }
 
-async function finishOrder(req: INewRequest, res: NowResponse) {
+async function finishOrder(req: INewRequest, res: Response) {
     const order = await Order.findOne({_id: req.query.purchaseID, status: {$eq: [0,1]}});
     
     if(order) {

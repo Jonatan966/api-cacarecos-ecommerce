@@ -1,5 +1,5 @@
-import { NowRequest } from "@vercel/node";
 import { ObjectId } from "mongoose";
+import { Request } from 'express';
 
 export interface IUserProps {
     _id: ObjectId;
@@ -7,6 +7,6 @@ export interface IUserProps {
     password?: string;
 }
 
-export interface INewRequest extends NowRequest {
+export interface INewRequest extends Request {
     user?: IUserProps;
 }

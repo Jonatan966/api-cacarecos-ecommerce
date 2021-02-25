@@ -1,11 +1,11 @@
-import { NowResponse } from "@vercel/node";
+import { Response } from 'express';
 import authMiddleware from "../../../src/middlewares/AuthMiddleware";
 import DbMiddleware from "../../../src/middlewares/DbMiddleware";
 import { Order, OrderProducts, Product } from "../../../src/schema";
 import { INewRequest } from "../../../src/utils/interfaces";
 
 
-async function showAllPurchases(req: INewRequest, res: NowResponse) {
+async function showAllPurchases(req: INewRequest, res: Response) {
   let orders = await Order.find({user_id: req.user._id}, {user_id: 0});
   let order_products = await OrderProducts.find({order_id: {$in: orders.map(item => item._id)}});
 
@@ -24,11 +24,11 @@ async function checkProductUnits(localList: any[], dbList: any[]) {
   return validator.every(item => item);
 }
 
-async function checkout(req: INewRequest, res: NowResponse) {
+async function checkout(req: INewRequest, res: Response) {
   const {reqProducts} = req.body;
 
   if (reqProducts.length) {
-    const products = await Product.find({_id: {$in: reqProducts.map(item => item.product_id)}});
+    const products = await Product.find({_id: {$in: reqProducts.map((item: any) => item.product_id)}});
 
     if (reqProducts.length === products.length) {
       if (await checkProductUnits(reqProducts, products)) {

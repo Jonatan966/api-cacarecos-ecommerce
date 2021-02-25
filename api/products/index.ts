@@ -1,4 +1,4 @@
-import { NowRequest, NowResponse } from "@vercel/node";
+import {Response, Request} from 'express';
 import { isValidObjectId } from "mongoose";
 import connectToFirestore from "../../src/connectors/FirestoreConnector";
 
@@ -10,7 +10,7 @@ import { parseMultipartForm, parsePaginator, parseQueryParams, parseSearchFilter
 import ProductImageUploader from "../../src/utils/productImageUploader";
 
 
-async function getAllProducts(req: NowRequest, res: NowResponse) {
+async function getAllProducts(req: Request, res: Response) {
   let newQuery = parseQueryParams(req.query, Object.keys(Product.schema.paths));
   let newFilter = parseSearchFilter(req.query, ['name', 'description', 'category'], ['category']);
 
@@ -23,7 +23,7 @@ async function getAllProducts(req: NowRequest, res: NowResponse) {
   return res.status(200).json(products);
 }
 
-async function addProduct(req: INewRequest, res: NowResponse) {
+async function addProduct(req: INewRequest, res: Response) {
   const {body, files, error} = await parseMultipartForm(req, 'images') as {body: any, files: File[], error?: Error};
 
   if (!error && body && files) {

@@ -1,6 +1,5 @@
-import { NowRequest, NowResponse } from "@vercel/node";
+import {Response, Request} from 'express';
 import { isValidObjectId } from "mongoose";
-import connectToFirestore from "../../src/connectors/FirestoreConnector";
 
 import adminMiddleware from "../../src/middlewares/AdminMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
@@ -9,8 +8,8 @@ import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams } from "../../src/utils/parsers";
 import ProductImageUploader from "../../src/utils/productImageUploader";
 
-async function showProduct(req: NowRequest, res: NowResponse) {
-  const productID = req.query.productID;
+async function showProduct(req: Request, res: Response) {
+  const productID = req.params.productID;
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(Product.schema.paths));
 
   if (isValidObjectId(productID)) {
@@ -28,7 +27,7 @@ async function showProduct(req: NowRequest, res: NowResponse) {
   return res.status(400).json({error: 'ITEM NÃO ENCONTRADO'});
 }
 
-async function deleteProduct(req: INewRequest, res: NowResponse) {
+async function deleteProduct(req: INewRequest, res: Response) {
   const productID = req.query.productID;
 
   if (isValidObjectId(productID)) {
@@ -42,12 +41,12 @@ async function deleteProduct(req: INewRequest, res: NowResponse) {
   return res.status(400).json({error: 'ITEM NÃO ENCONTRADO'});
 }
 
-async function editProduct(req: INewRequest, res: NowResponse) {
+async function editProduct(req: INewRequest, res: Response) {
   const productID = req.query.productID;
 
   if (isValidObjectId(productID)) {
     const entries = Object.keys(req.body);
-    const updates = {};
+    const updates = {} as any;
 
     for (let i = 0; i < entries.length; i++) {
       updates[entries[i]] = Object.values(req.body)[i];

@@ -1,4 +1,4 @@
-import { NowRequest, NowResponse } from "@vercel/node";
+import {Response, Request} from 'express';
 
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
 import DbMiddleware from "../../src/middlewares/DbMiddleware";
@@ -6,7 +6,7 @@ import { INewRequest } from "../../src/utils/interfaces";
 import Category from '../../src/schema/Category';
 import { parsePaginator, parseQueryParams, parseSearchFilter } from "../../src/utils/parsers";
 
-async function showAllCategories(req: NowRequest, res: NowResponse) {
+async function showAllCategories(req: Request, res: Response) {
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(Category.schema.paths));
   let newFilter = parseSearchFilter(req.query, ['name']);
 
@@ -17,7 +17,7 @@ async function showAllCategories(req: NowRequest, res: NowResponse) {
   return res.status(200).json(result);
 }
 
-async function addCategory(req: INewRequest, res: NowResponse) {
+async function addCategory(req: INewRequest, res: Response) {
   const {name} = req.body;
 
   if (req.user.admin) {

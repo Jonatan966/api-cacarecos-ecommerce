@@ -1,9 +1,9 @@
-import { NowRequest } from "@vercel/node";
+import { Request } from 'express';
 import multiparty from 'multiparty';
 
-export function parseQueryParams(query, acceptOnly: string[]) {
+export function parseQueryParams(query: any, acceptOnly: string[]) {
   let oldQuery = {...query};
-  let newQuery = {};
+  let newQuery = {} as any;
 
   Object.keys(oldQuery).forEach(item => {
     if (!(acceptOnly.findIndex(obj => obj === item) + 1)) {
@@ -39,14 +39,14 @@ export function parsePaginator(page: any, limit: any, max_results: number = 15) 
 
 export function parseSearchFilter(query: any, acceptOnly: string[], notUseRegexQuery: string[] = []) {
   let {find_by, find_query} = query;
-  let finalFilter = {};
+  let finalFilter = {} as any;
 
   if (find_by && find_query) {
     find_by = find_by.split("|");
     find_query = find_query.split("|");
 
     if (find_by.length === find_query.length) {
-      find_by.forEach((find_item, find_index) => {
+      find_by.forEach((find_item: string, find_index: string | number) => {
         if (!acceptOnly.find(item => item === find_item)) {
           delete find_by[find_index];
           delete find_query[find_index];
@@ -64,12 +64,12 @@ export function parseSearchFilter(query: any, acceptOnly: string[], notUseRegexQ
   return finalFilter;
 }
 
-export function parseMultipartForm(req: NowRequest, files_field_name: string = '') {
+export function parseMultipartForm(req: Request, files_field_name: string = '') {
   const form = new multiparty.Form();
 
   return new Promise((resolve, reject) => {
     form.parse(req, (error, fields, files) => {
-      let final = {body: null, files: null, error: null}
+      let final = {body: null, files: null, error: null} as any
       if (!error) {
         Object.keys(fields).forEach(item => 
           fields[item] = fields[item].join()

@@ -5,6 +5,8 @@ import defineRoutes from './src/utils/defineRoutes';
 //dotenv.config();
 
 const server = express();
+server.use(express.json());
+
 const serverPort = process.env.PORT || 5000;
 
 defineRoutes(server);

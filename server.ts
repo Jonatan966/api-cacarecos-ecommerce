@@ -7,10 +7,6 @@ import defineRoutes from './src/utils/defineRoutes';
 
 const server = defineRoutes(express());
 
-server.get('/*', async (req,res) => {
-  return res.status(404).json({error: 'ROTA INEXISTENTE'});
-});
-
 server.all('/teste', (req, res) => {
   return res.send('TESTE');
 });

@@ -5,9 +5,7 @@ import defineRoutes from './src/utils/defineRoutes';
 
 //dotenv.config();
 
-const server = express();
-
-defineRoutes(server);
+const server = defineRoutes(express());
 
 server.get('/*', async (req,res) => {
   return res.status(404).json({error: 'ROTA INEXISTENTE'});

@@ -9,9 +9,7 @@ export default function defineRoutes(server: Express) {
   
   routes.forEach(async (route, index) => {
     const routeFunction = (await import('../../' + routeFiles[index].replace('.ts', '.js'))).default;
-    console.log('/'+route);
-    server = server.all('/'+route, routeFunction);
+    server.all('/'+route, routeFunction);
+    console.log(`Rota "/${route}" carregada!`);
   });  
-
-  return server;
 }

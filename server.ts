@@ -1,14 +1,14 @@
 import express from 'express';
-//import dotenv from 'dotenv';
-
 import defineRoutes from './src/utils/defineRoutes';
 
+//import dotenv from 'dotenv';
 //dotenv.config();
 
-const server = defineRoutes(express());
+const server = express();
+const serverPort = process.env.PORT || 5000;
 
-server.all('/teste', (req, res) => {
-  return res.send('TESTE');
-});
+defineRoutes(server);
 
-server.listen(process.env.PORT || 5001, () => console.log('Servidor aberto!'));
+server.listen(serverPort, () => 
+  console.log(`Servidor aberto na porta ${server}`)
+);

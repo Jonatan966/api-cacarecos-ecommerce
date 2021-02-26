@@ -21,5 +21,6 @@ export default async function connectToDatabase() {
     return mongoose.connect(process.env.DB, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-    }).then(db => isConnected = db.connections[0].readyState);
+    }).then(db => isConnected = db.connections[0].readyState)
+      .catch(error => console.log('Algo deu errado ao tentar se conectar ao banco.\nMotivo:', error));
 }

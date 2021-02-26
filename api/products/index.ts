@@ -24,10 +24,9 @@ async function getAllProducts(req: Request, res: Response) {
 }
 
 async function addProduct(req: INewRequest, res: Response) {
-  const {body, files, error} = await parseMultipartForm(req, 'images') as {body: any, files: File[], error?: Error};
-
-  if (!error && body && files) {
-    const {name, description, category, price, units} = body;
+  //const {body, files, error} = await parseMultipartForm(req, 'images') as {body: any, files: File[], error?: Error};
+  //if (!error && body && files) {
+    const {name, description, category, price, units} = req.body;
 
     if (name && description && isValidObjectId(category) && price && units) {
       const result = await Product.create({
@@ -41,18 +40,18 @@ async function addProduct(req: INewRequest, res: Response) {
       });  
 
       if (result._id) {
-        const prd = new ProductImageUploader(String(result._id), await connectToFirestore());
-        const imageUploadErrors = await prd.uploadImages(files);
+        // const prd = new ProductImageUploader(String(result._id), await connectToFirestore());
+        // const imageUploadErrors = await prd.uploadImages(files);
 
-        if (!imageUploadErrors.length) {
+        // if (!imageUploadErrors.length) {
           return res.status(201).end();
-        }
-        return res.status(400).json({upload_errors: imageUploadErrors});
+        // }
+        // return res.status(400).json({upload_errors: imageUploadErrors});
       }
 
       return res.status(500).json({error: 'NÃO FOI POSSÍVEL CONCLUIR O CADASTRO'});
     }
-  }
+  //}
 
   return res.status(400).json({error: 'HÁ CAMPOS FALTANDO'});
 }

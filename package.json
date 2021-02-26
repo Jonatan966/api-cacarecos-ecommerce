@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc && node .",
+    "dev": "tsc && node --trace-warnings .",
     "start": "node ."
   }
 }

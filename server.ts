@@ -12,5 +12,5 @@ const serverPort = process.env.PORT || 5000;
 defineRoutes(server);
 
 server.listen(serverPort, () => 
-  console.log(`Servidor aberto na porta ${server}`)
+  console.log(`Servidor aberto na porta ${serverPort}`)
 );

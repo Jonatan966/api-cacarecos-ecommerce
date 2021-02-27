@@ -1,11 +1,12 @@
 import {Response, Request, Router} from 'express';
 import { isValidObjectId } from "mongoose";
+import uploader from '../../src/utils/uploader';
 import connectToFirestore from "../../src/connectors/FirestoreConnector";
 
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
 import Product from "../../src/schema/Product";
 import { INewRequest } from "../../src/utils/interfaces";
-import { parseMultipartForm, parsePaginator, parseQueryParams, parseRoute, parseSearchFilter } from "../../src/utils/parsers";
+import { parsePaginator, parseQueryParams, parseRoute, parseSearchFilter } from "../../src/utils/parsers";
 import ProductImageUploader from "../../src/utils/productImageUploader";
 
 
@@ -23,34 +24,31 @@ async function getAllProducts(req: Request, res: Response) {
 }
 
 async function addProduct(req: INewRequest, res: Response) {
-  //const {body, files, error} = await parseMultipartForm(req, 'images') as {body: any, files: File[], error?: Error};
-  //if (!error && body && files) {
-    const {name, description, category, price, units} = req.body;
+  const {name, description, category, price, units} = req.body;
 
-    if (name && description && isValidObjectId(category) && price && units) {
-      const result = await Product.create({
-        name, 
-        description, 
-        category, 
-        price, 
-        units, 
-        created_at: Date.now(),
-        updated_at: Date.now(),
-      });  
+  if (name && description && isValidObjectId(category) && price && units && req.files.length) {
+    const result = await Product.create({
+      name, 
+      description, 
+      category, 
+      price, 
+      units, 
+      created_at: Date.now(),
+      updated_at: Date.now(),
+    });  
 
-      if (result._id) {
-        // const prd = new ProductImageUploader(String(result._id), await connectToFirestore());
-        // const imageUploadErrors = await prd.uploadImages(files);
+    if (result._id) {
+      const prd = new ProductImageUploader(String(result._id), await connectToFirestore());
+      const imageUploadErrors = await prd.uploadImages(req.files as any[]);
 
-        // if (!imageUploadErrors.length) {
-          return res.status(201).end();
-        // }
-        // return res.status(400).json({upload_errors: imageUploadErrors});
+      if (!imageUploadErrors.length) {
+        return res.status(201).end();
       }
-
-      return res.status(500).json({error: 'NÃO FOI POSSÍVEL CONCLUIR O CADASTRO'});
+      return res.status(400).json({upload_errors: imageUploadErrors});
     }
-  //}
+
+    return res.status(500).json({error: 'NÃO FOI POSSÍVEL CONCLUIR O CADASTRO'});
+  }
 
   return res.status(400).json({error: 'HÁ CAMPOS FALTANDO'});
 }
@@ -59,6 +57,6 @@ const routes = Router();
 
 routes.route(parseRoute(__dirname))
 .get(getAllProducts)
-.post(authMiddleware(true), addProduct);
+.post(authMiddleware(true), uploader.array('images[]', 4), addProduct);
 
 export default routes;

@@ -88,25 +88,17 @@ export function parseMultipartForm(req: Request, files_field_name: string = '') 
 }
 
 
-export function parseRoutes(routes: string[]) {
-  routes = routes.map(item => {
-    item = item.replace('.ts', '').replace('.js', '');
-
-    if (item.includes('index')) {
-      item = item.replace('/index', '');
-    }
-    else if (item.includes('[')) {
-      item = item.replace('[', ':').replace(']', '');
-    }
-
-    return item;
-  });
-
-  return routes;
-}
-
 export function parseRoute(route: string) {
   let newRoute = route.split('dist')[1];
-  newRoute = parseRoutes([newRoute])[0];
+
+  newRoute = newRoute.replace('.ts', '').replace('.js', '');
+
+  if (newRoute.includes('index')) {
+    newRoute = newRoute.replace('/index', '');
+  }
+  else if (newRoute.includes('[')) {
+    newRoute = newRoute.replace('[', ':').replace(']', '');
+  }
+
   return newRoute;
 }

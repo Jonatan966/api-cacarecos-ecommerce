@@ -28,7 +28,7 @@ async function showProduct(req: Request, res: Response) {
 }
 
 async function deleteProduct(req: INewRequest, res: Response) {
-  const productID = req.query.productID;
+  const productID = req.params.productID;
 
   if (isValidObjectId(productID)) {
     const product = await Product.findByIdAndRemove(productID);
@@ -42,7 +42,7 @@ async function deleteProduct(req: INewRequest, res: Response) {
 }
 
 async function editProduct(req: INewRequest, res: Response) {
-  const productID = req.query.productID;
+  const productID = req.params.productID;
 
   if (isValidObjectId(productID)) {
     const entries = Object.keys(req.body);

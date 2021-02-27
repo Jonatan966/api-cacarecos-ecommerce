@@ -5,6 +5,7 @@ import connectToFirestore from "../../src/connectors/FirestoreConnector";
 
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
 import Product from "../../src/schema/Product";
+import errorList from "../../src/utils/errorList";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams, parseRoute, parseSearchFilter } from "../../src/utils/parsers";
 import ProductImageUploader from "../../src/utils/productImageUploader";
@@ -50,7 +51,7 @@ async function addProduct(req: INewRequest, res: Response) {
     return res.status(500).json({error: 'NÃO FOI POSSÍVEL CONCLUIR O CADASTRO'});
   }
 
-  return res.status(400).json({error: 'HÁ CAMPOS FALTANDO'});
+  return res.status(400).json(errorList.CAMPOS_FALTANDO);  
 }
 
 const routes = Router();

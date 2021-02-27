@@ -2,6 +2,7 @@ import { isValidObjectId } from "mongoose";
 import {Response, Request, Router} from 'express';
 
 import Category from "../../src/schema/Category";
+import errorList from "../../src/utils/errorList";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams, parseRoute } from "../../src/utils/parsers";
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
@@ -18,7 +19,7 @@ async function showCategory(req: Request, res: Response) {
     return res.status(200).json(result);
   }
 
-  return res.status(400).json(null);
+  return res.status(400).json(errorList.ID_INVALIDO);
 }
 
 async function editCategory(req: INewRequest, res: Response) {
@@ -29,7 +30,7 @@ async function editCategory(req: INewRequest, res: Response) {
     return res.status(200).json(result);
   }
 
-  return res.status(400).json(null);
+  return res.status(400).json(errorList.CAMPOS_FALTANDO);
 }
 
 const routes = Router();

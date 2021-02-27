@@ -20,16 +20,12 @@ async function showAllCategories(req: Request, res: Response) {
 async function addCategory(req: INewRequest, res: Response) {
   const {name} = req.body;
 
-  if (req.user.admin) {
-    const item = await Category.create({
-      name, 
-      color: [Math.ceil(Math.random() * 360), 100, 86]
-    });
-  
-    return res.status(201).json(item);  
-  }
+  const item = await Category.create({
+    name, 
+    color: [Math.ceil(Math.random() * 360), 100, 86]
+  });
 
-  return res.status(401).json(null);
+  return res.status(201).json(item);  
 }
 
 const routes = Router();

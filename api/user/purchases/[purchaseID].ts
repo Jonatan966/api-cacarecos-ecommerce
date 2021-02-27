@@ -2,6 +2,7 @@ import {Response, Router} from 'express';
 import { parseRoute } from '../../../src/utils/parsers';
 import authMiddleware from "../../../src/middlewares/AuthMiddleware";
 import { Order, OrderProducts } from "../../../src/schema";
+import errorList from "../../../src/utils/errorList";
 import { INewRequest } from "../../../src/utils/interfaces";
 
 
@@ -23,7 +24,7 @@ async function cancelOrder(req: INewRequest, res: Response) {
         return res.status(200).json(result);
     }
 
-    return res.status(400).json({error: 'PEDIDO NÃO ENCONTRADO'});
+    return res.status(400).json(errorList.REGISTRO_NAO_ENCONTRADO);
 }
 
 async function finishOrder(req: INewRequest, res: Response) {
@@ -35,7 +36,7 @@ async function finishOrder(req: INewRequest, res: Response) {
         return res.status(200).json(result);
     }
 
-    return res.status(400).json({error: 'PEDIDO NÃO ENCONTRADO'});
+    return res.status(400).json(errorList.REGISTRO_NAO_ENCONTRADO);
 }
 
 const routes = Router();

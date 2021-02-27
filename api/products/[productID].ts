@@ -3,6 +3,7 @@ import { isValidObjectId } from "mongoose";
 
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
 import Product from "../../src/schema/Product";
+import errorList from "../../src/utils/errorList";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams, parseRoute } from "../../src/utils/parsers";
 import ProductImageUploader from "../../src/utils/productImageUploader";
@@ -24,7 +25,7 @@ async function showProduct(req: Request, res: Response) {
     return res.status(200).json(product);
   }
 
-  return res.status(400).json({error: 'ITEM NÃO ENCONTRADO'});
+  return res.status(400).json(errorList.ID_INVALIDO);
 }
 
 async function deleteProduct(req: INewRequest, res: Response) {
@@ -38,7 +39,7 @@ async function deleteProduct(req: INewRequest, res: Response) {
     }
   }
 
-  return res.status(400).json({error: 'ITEM NÃO ENCONTRADO'});
+  return res.status(400).json(errorList.ID_INVALIDO);
 }
 
 async function editProduct(req: INewRequest, res: Response) {
@@ -58,10 +59,10 @@ async function editProduct(req: INewRequest, res: Response) {
       return res.status(200).json(null);
     }
 
-    return res.status(500).json({error: 'OCORREU UM ERRO AO TENTAR EXECUTAR ESSA OPERAÇÃO'});
+    return res.status(500).json(errorList.OPERACAO_NAO_EXECUTADA);
   }
 
-  return res.status(400).json({error: 'ID INVÁLIDO'});
+  return res.status(400).json(errorList.ID_INVALIDO);
 }
 
 const routes = Router();

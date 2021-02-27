@@ -13,7 +13,7 @@ function loadSchemas() {
 
 export default async function connectToDatabase() {
     if (isConnected) {
-        return Promise.resolve();
+        return 1;
     }
 
     loadSchemas();

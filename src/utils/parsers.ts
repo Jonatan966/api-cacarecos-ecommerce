@@ -1,6 +1,3 @@
-import { Request } from 'express';
-import multiparty from 'multiparty';
-
 export function parseQueryParams(query: any, acceptOnly: string[]) {
   let oldQuery = {...query};
   let newQuery = {} as any;
@@ -63,30 +60,6 @@ export function parseSearchFilter(query: any, acceptOnly: string[], notUseRegexQ
 
   return finalFilter;
 }
-
-export function parseMultipartForm(req: Request, files_field_name: string = '') {
-  const form = new multiparty.Form();
-
-  return new Promise((resolve, reject) => {
-    form.parse(req, (error, fields, files) => {
-      let final = {body: null, files: null, error: null} as any
-      if (!error) {
-        Object.keys(fields).forEach(item => 
-          fields[item] = fields[item].join()
-        );
-
-        final.body = fields;
-        final.files = files[files_field_name];
-        resolve(final);
-        return;
-      }
-
-      final.error = error;
-      reject(final);
-    });
-  });
-}
-
 
 export function parseRoute(route: string) {
   let newRoute = route.split('dist')[1];

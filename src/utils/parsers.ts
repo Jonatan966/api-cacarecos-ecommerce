@@ -90,7 +90,7 @@ export function parseMultipartForm(req: Request, files_field_name: string = '') 
 
 export function parseRoutes(routes: string[]) {
   routes = routes.map(item => {
-    item = item.replace('.ts', '');
+    item = item.replace('.ts', '').replace('.js', '');
 
     if (item.includes('index')) {
       item = item.replace('/index', '');
@@ -103,4 +103,10 @@ export function parseRoutes(routes: string[]) {
   });
 
   return routes;
+}
+
+export function parseRoute(route: string) {
+  let newRoute = route.split('dist')[1];
+  newRoute = parseRoutes([newRoute])[0];
+  return newRoute;
 }

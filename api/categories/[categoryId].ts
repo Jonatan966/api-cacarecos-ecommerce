@@ -1,11 +1,11 @@
 import { isValidObjectId } from "mongoose";
-import {Response, Request} from 'express';
+import {Response, Request, Router} from 'express';
 
-import adminMiddleware from "../../src/middlewares/AdminMiddleware";
-import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import Category from "../../src/schema/Category";
 import { INewRequest } from "../../src/utils/interfaces";
-import { parsePaginator, parseQueryParams } from "../../src/utils/parsers";
+import { parsePaginator, parseQueryParams, parseRoute } from "../../src/utils/parsers";
+import authMiddleware from "../../src/middlewares/AuthMiddleware";
+
 
 async function showCategory(req: Request, res: Response) {
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(Category.schema.paths));
@@ -32,13 +32,10 @@ async function editCategory(req: INewRequest, res: Response) {
   return res.status(400).json(null);
 }
 
-export default DbMiddleware(async (req, res) => {
-  switch(req.method) {
-    case 'GET':
-      return await showCategory(req, res);
-    case 'POST':
-      return await adminMiddleware(req, res, editCategory);
-    default:
-      return res.status(401).json(null);
-  }
-});
+const routes = Router();
+
+routes.route(parseRoute(__filename))
+.get(showCategory)
+.post(authMiddleware(true), editCategory);
+
+export default routes;

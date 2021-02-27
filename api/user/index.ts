@@ -1,11 +1,11 @@
-import {Response} from 'express';
+import {Response, Router} from 'express';
 import bcrypt from 'bcrypt';
 
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
-import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import User from "../../src/schema/User";
 import { INewRequest } from "../../src/utils/interfaces";
-import { parseQueryParams } from "../../src/utils/parsers";
+import { parseQueryParams, parseRoute } from "../../src/utils/parsers";
+
 
 async function showUser(req: INewRequest, res: Response) {
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(User.schema.paths));
@@ -30,11 +30,10 @@ async function createUser(req: INewRequest, res: Response) {
   return res.status(400).json({error: 'HÁ CAMPOS FALTANDO'});
 }
 
-export default DbMiddleware(async (req, res) => {
-  switch(req.method) {
-    case 'GET':
-      return await authMiddleware(req,res, showUser);
-    case 'POST':
-      return await createUser(req, res);
-  }
-});
+const routes = Router()
+
+routes.route(parseRoute(__dirname))
+.get(authMiddleware(), showUser)
+.post(createUser);
+
+export default routes;

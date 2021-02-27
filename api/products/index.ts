@@ -1,12 +1,11 @@
-import {Response, Request} from 'express';
+import {Response, Request, Router} from 'express';
 import { isValidObjectId } from "mongoose";
 import connectToFirestore from "../../src/connectors/FirestoreConnector";
 
-import adminMiddleware from "../../src/middlewares/AdminMiddleware";
-import DbMiddleware from "../../src/middlewares/DbMiddleware";
+import authMiddleware from "../../src/middlewares/AuthMiddleware";
 import Product from "../../src/schema/Product";
 import { INewRequest } from "../../src/utils/interfaces";
-import { parseMultipartForm, parsePaginator, parseQueryParams, parseSearchFilter } from "../../src/utils/parsers";
+import { parseMultipartForm, parsePaginator, parseQueryParams, parseRoute, parseSearchFilter } from "../../src/utils/parsers";
 import ProductImageUploader from "../../src/utils/productImageUploader";
 
 
@@ -56,15 +55,10 @@ async function addProduct(req: INewRequest, res: Response) {
   return res.status(400).json({error: 'HÁ CAMPOS FALTANDO'});
 }
 
-export default DbMiddleware(async (req, res) => {
-  switch(req.method) {
-    case 'GET':
-      return await getAllProducts(req, res);
+const routes = Router();
 
-    case 'POST':
-      return await adminMiddleware(req, res, addProduct);
+routes.route(parseRoute(__dirname))
+.get(getAllProducts)
+.post(authMiddleware(true), addProduct);
 
-    default:
-      return res.status(401).json(null);
-  }
-});
+export default routes;

@@ -1,9 +1,9 @@
-import {Request, Response} from 'express';
-import adminMiddleware from "../../../src/middlewares/AdminMiddleware";
+import {Response, Router} from 'express';
+import { parseRoute } from '../../../src/utils/parsers';
 import authMiddleware from "../../../src/middlewares/AuthMiddleware";
-import DbMiddleware from "../../../src/middlewares/DbMiddleware";
 import { Order, OrderProducts } from "../../../src/schema";
 import { INewRequest } from "../../../src/utils/interfaces";
+
 
 async function showPurchase(req: INewRequest, res: Response) {
     let order = await Order.findOne({_id: req.query.purchaseID, user_id: req.user._id}, {user_id: 0});
@@ -38,15 +38,11 @@ async function finishOrder(req: INewRequest, res: Response) {
     return res.status(400).json({error: 'PEDIDO NÃO ENCONTRADO'});
 }
 
-export default DbMiddleware(async (req, res) => {
-    switch(req.method) {
-        case 'GET':
-            return await authMiddleware(req, res, showPurchase);
-        case 'PUT':
-            return await authMiddleware(req, res, cancelOrder);
-        case 'POST':
-            return await adminMiddleware(req, res, finishOrder);
-        default:
-            return res.status(401).json(null);
-    }
-});
+const routes = Router();
+
+routes.route(parseRoute(__filename))
+.get(authMiddleware(), showPurchase)
+.put(authMiddleware(), cancelOrder)
+.post(authMiddleware(), finishOrder);
+
+export default routes;

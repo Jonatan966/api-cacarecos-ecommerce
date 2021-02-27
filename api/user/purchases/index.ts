@@ -1,6 +1,6 @@
-import { Response } from 'express';
+import { Response, Router } from 'express';
+import { parseRoute } from '../../../src/utils/parsers';
 import authMiddleware from "../../../src/middlewares/AuthMiddleware";
-import DbMiddleware from "../../../src/middlewares/DbMiddleware";
 import { Order, OrderProducts, Product } from "../../../src/schema";
 import { INewRequest } from "../../../src/utils/interfaces";
 
@@ -55,11 +55,10 @@ async function checkout(req: INewRequest, res: Response) {
   return res.status(400).json({error: 'HÁ PRODUTOS FALTANDO'});
 }
 
-export default DbMiddleware(async (req, res) => {
-  switch(req.method) {
-    case 'GET':
-      return await authMiddleware(req, res, showAllPurchases);
-    case 'POST':
-      return await authMiddleware(req, res, checkout);
-  }
-});
+const routes = Router();
+
+routes.route(parseRoute(__filename))
+.get(authMiddleware(), showAllPurchases)
+.post(authMiddleware(), checkout);
+
+export default routes;

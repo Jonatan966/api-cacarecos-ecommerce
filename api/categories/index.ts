@@ -1,10 +1,10 @@
-import {Response, Request} from 'express';
+import {Response, Request, Router} from 'express';
 
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
-import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import { INewRequest } from "../../src/utils/interfaces";
 import Category from '../../src/schema/Category';
-import { parsePaginator, parseQueryParams, parseSearchFilter } from "../../src/utils/parsers";
+import { parsePaginator, parseQueryParams, parseRoute, parseSearchFilter } from "../../src/utils/parsers";
+
 
 async function showAllCategories(req: Request, res: Response) {
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(Category.schema.paths));
@@ -32,13 +32,10 @@ async function addCategory(req: INewRequest, res: Response) {
   return res.status(401).json(null);
 }
 
-export default DbMiddleware(async (req, res) => {
-  switch(req.method) {
-    case 'GET':
-      return await showAllCategories(req, res);
-    case 'POST':
-      return await authMiddleware(req, res, addCategory);
-    default:
-      return res.status(401).json(null);
-  }
-});
+const routes = Router();
+
+routes.route(parseRoute(__dirname))
+.get(showAllCategories)
+.post(authMiddleware, addCategory);
+
+export default routes;

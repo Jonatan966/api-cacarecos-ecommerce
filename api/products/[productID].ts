@@ -1,12 +1,12 @@
-import {Response, Request} from 'express';
+import {Response, Request, Router} from 'express';
 import { isValidObjectId } from "mongoose";
 
-import adminMiddleware from "../../src/middlewares/AdminMiddleware";
-import DbMiddleware from "../../src/middlewares/DbMiddleware";
+import authMiddleware from "../../src/middlewares/AuthMiddleware";
 import Product from "../../src/schema/Product";
 import { INewRequest } from "../../src/utils/interfaces";
-import { parsePaginator, parseQueryParams } from "../../src/utils/parsers";
+import { parsePaginator, parseQueryParams, parseRoute } from "../../src/utils/parsers";
 import ProductImageUploader from "../../src/utils/productImageUploader";
+
 
 async function showProduct(req: Request, res: Response) {
   const productID = req.params.productID;
@@ -64,15 +64,11 @@ async function editProduct(req: INewRequest, res: Response) {
   return res.status(400).json({error: 'ID INVÁLIDO'});
 }
 
-export default DbMiddleware(async (req, res) => {
-  switch(req.method) {
-    case 'GET':
-      return await showProduct(req, res);
-    case 'PUT':
-      return await adminMiddleware(req, res, editProduct);
-    case 'DELETE':
-      return await adminMiddleware(req, res, deleteProduct);     
-    default:
-      return res.status(401).json(null);
-  }
-});
+const routes = Router();
+
+routes.route(parseRoute(__filename))
+.get(showProduct)
+.put(authMiddleware(true), editProduct)
+.delete(authMiddleware(true), deleteProduct);
+
+export default routes;

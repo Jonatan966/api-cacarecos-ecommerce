@@ -12,30 +12,19 @@ class ProductImageUploader {
     this.bucket = bucket;
   }
 
-  private _saveImagesIntoTmp(images: any[]) {
-    images.forEach((img, x) => {
-      const newProductsPath = path.join(__dirname, '..', '..', 'tmp', this.productID);
-      const newFilePath = path.join(newProductsPath, x + img.originalFilename.substr(-4));
-      if (!fs.existsSync(newProductsPath)) {
-        fs.mkdirSync(newProductsPath);
-      }
-      fs.renameSync(img.path, newFilePath);
-    });
-    return true;
-  }
-
   async uploadImages(images: any[]) {
-    this._saveImagesIntoTmp(images);
     let errors = [];
 
     for (let x = 0; x < images.length; x++) {
       try {
-        const newFileName = x + images[x].originalFilename.split('.')[1];
-        const oldPath = path.join('tmp', this.productID, newFileName);
-        await this.bucket.upload(oldPath, {destination: `products/${this.productID}/${newFileName}`});  
+        const newFileName = `${x}.${images[x].originalname.split('.')[1]}`;
+        await this.bucket.upload(images[x].path, {
+          destination: `products/${this.productID}/${newFileName}`
+        });  
       }
-      catch {
-        errors.push(images[x].originalFilename);
+      catch (e){
+        console.log(e)
+        errors.push(images[x].originalname);
       }
     }
 

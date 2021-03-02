@@ -1,5 +1,6 @@
 import {Response, Request, Router} from 'express';
 import { isValidObjectId } from "mongoose";
+import slugCreator from '../../src/utils/slugCreator';
 
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
 import Product from "../../src/schema/Product";
@@ -50,6 +51,10 @@ async function editProduct(req: INewRequest, res: Response) {
     const updates = {} as any;
 
     for (let i = 0; i < entries.length; i++) {
+      if (entries[i] === 'slug') {
+        updates['slug'] = slugCreator(`${Object.values(req.body)[i]}`);
+        continue;
+      }
       updates[entries[i]] = Object.values(req.body)[i];
     }
 

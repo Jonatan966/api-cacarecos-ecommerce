@@ -13,12 +13,12 @@ async function showProduct(req: Request, res: Response) {
   const productID = req.params.productID;
   const fieldDelimiter = parseQueryParams(req.query, Object.keys(Product.schema.paths));
 
-  if (isValidObjectId(productID)) {
-    let product = await Product.findOne({_id: productID}, fieldDelimiter, 
+  if (productID) {
+    let product = await Product.findOne({slug: productID}, fieldDelimiter, 
       parsePaginator(req.query.page, req.query.max_results)
-    ).populate('category');
+    ).populate('category') as any;
 
-    if (product._id) {
+    if (product && product.slug) {
       product = (await ProductImageUploader.addImagesToProductsQuery([product]))[0];
     }
     

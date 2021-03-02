@@ -9,6 +9,7 @@ import errorList from "../../src/utils/errorList";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams, parseRoute, parseSearchFilter } from "../../src/utils/parsers";
 import ProductImageUploader from "../../src/utils/productImageUploader";
+import slugCreator from '../../src/utils/slugCreator';
 
 
 async function getAllProducts(req: Request, res: Response) {
@@ -25,11 +26,12 @@ async function getAllProducts(req: Request, res: Response) {
 }
 
 async function addProduct(req: INewRequest, res: Response) {
-  const {name, description, category, price, units} = req.body;
+  const {name, description, category, price, units, slug} = req.body;
 
-  if (name && description && isValidObjectId(category) && price && units && req.files.length) {
+  if (name && description && isValidObjectId(category) && price && units && slug && req.files.length) {
     const result = await Product.create({
       name, 
+      slug: slugCreator(slug),
       description, 
       category, 
       price, 

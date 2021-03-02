@@ -3,7 +3,6 @@ import { Request, Response, Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { parseRoute } from '../../src/utils/parsers';
 
-import DbMiddleware from "../../src/middlewares/DbMiddleware";
 import User from "../../src/schema/User";
 import errorList from '../../src/utils/errorList';
 import { IUserProps } from '../../src/utils/interfaces';

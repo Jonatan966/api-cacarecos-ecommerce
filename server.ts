@@ -8,7 +8,7 @@ import cors from 'cors';
 
 const server = express();
 server.use(express.json());
-server.use(cors());
+//server.use(cors());
 
 const serverPort = process.env.PORT || 5000;
 

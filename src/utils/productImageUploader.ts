@@ -39,7 +39,10 @@ class ProductImageUploader {
       let images = imageFiles[x];
 
       for(let y = 0; y < images.length; y++) {
-        imageLinks.push((await images[y].getSignedUrl({action: 'read', expires: Date.now()*1.25})).join())
+        imageLinks.push({
+          url: (await images[y].getSignedUrl({action: 'read', expires: Date.now()*1.25})).join(),
+          id: images[y].name
+        })
       }
     }
     

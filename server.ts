@@ -3,8 +3,8 @@ import defineRoutes from './src/utils/defineRoutes';
 import DbMiddleware from './src/middlewares/DbMiddleware';
 import cors from 'cors';
 
-import dotenv from 'dotenv';
-dotenv.config();
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 const server = express();
 server.use(express.json());

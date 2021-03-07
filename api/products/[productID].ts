@@ -8,6 +8,7 @@ import errorList from "../../src/utils/errorList";
 import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams, parseRoute } from "../../src/utils/parsers";
 import ProductImageUploader from "../../src/utils/productImageUploader";
+import connectToFirestore from '../../src/connectors/FirestoreConnector';
 
 
 async function showProduct(req: Request, res: Response) {
@@ -32,11 +33,14 @@ async function showProduct(req: Request, res: Response) {
 async function deleteProduct(req: INewRequest, res: Response) {
   const productID = req.params.productID;
 
-  if (isValidObjectId(productID)) {
-    const product = await Product.findByIdAndRemove(productID);
+  if (productID) {
+    const product = await Product.findOneAndDelete({slug: productID});
 
     if (product) {
-      return res.status(200).json(null);
+      const firestoreProvider = new ProductImageUploader(product._id, await connectToFirestore());
+      const deleteErrors = await firestoreProvider.removeAllImages();
+
+      return res.status(200).json({undeletedImages: deleteErrors});
     }
   }
 
@@ -46,7 +50,7 @@ async function deleteProduct(req: INewRequest, res: Response) {
 async function editProduct(req: INewRequest, res: Response) {
   const productID = req.params.productID;
 
-  if (isValidObjectId(productID)) {
+  if (productID) {
     const entries = Object.keys(req.body);
     const updates = {} as any;
 
@@ -58,10 +62,15 @@ async function editProduct(req: INewRequest, res: Response) {
       updates[entries[i]] = Object.values(req.body)[i];
     }
 
-    const result = await Product.updateOne({_id: productID}, {$set: updates});
+    const result = await Product.findOneAndUpdate({slug: productID}, {$set: updates});
+    
+    if (result) {
+      const firestoreProvider = new ProductImageUploader(result._id, await connectToFirestore());
+      
+      const deleteErrors = await firestoreProvider.removeImages(req.body.deletedImages ?? []);
+      const uploadErrors = await firestoreProvider.uploadImages(req.files as any[] ?? []);
 
-    if (result.ok) {
-      return res.status(200).json(null);
+      return res.status(200).json({undeletedImages: deleteErrors, uploadErrors});
     }
 
     return res.status(500).json(errorList.OPERACAO_NAO_EXECUTADA);

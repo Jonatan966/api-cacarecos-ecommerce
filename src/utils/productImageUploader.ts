@@ -12,7 +12,7 @@ class ProductImageUploader {
     this.bucket = bucket;
   }
 
-  async uploadImages(images: any[]) {
+  async uploadImages(images: Express.Multer.File[]) {
     let errors = [];
 
     for (let x = 0; x < images.length; x++) {
@@ -47,6 +47,44 @@ class ProductImageUploader {
     }
     
     return imageLinks;
+  }
+
+  async removeImages(images: string[]) {
+    let errors = [];
+
+    for (var image of images) {
+      const finalImageName = image.substring(image.lastIndexOf('/') + 1);
+      const bucketImage = await this.bucket.getFiles({prefix: `products/${this.productID}/${finalImageName}`});
+
+      if (bucketImage.length) {
+        if (bucketImage[0].length) {
+          await bucketImage[0][0].delete();
+          continue;
+        }
+      }
+      errors.push(finalImageName);
+    }
+
+    return errors;
+  }
+
+  async removeAllImages() {
+    let undeletedImages = [];
+    const bucketImages = await this.bucket.getFiles({prefix: `products/${this.productID}`});
+    
+    for(let x = 0; x < bucketImages.length; x++) {
+      let images = bucketImages[x];
+
+      for(let y = 0; y < images.length; y++) {
+        if (!!images[y].delete) {
+          await images[y].delete();
+          continue;
+        }
+        undeletedImages.push(images[y].name);
+      }
+    }
+
+    return undeletedImages;
   }
 
   static async addImagesToProductsQuery(products: any[]) {

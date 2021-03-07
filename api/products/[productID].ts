@@ -1,5 +1,4 @@
 import {Response, Request, Router} from 'express';
-import { isValidObjectId } from "mongoose";
 import slugCreator from '../../src/utils/slugCreator';
 
 import authMiddleware from "../../src/middlewares/AuthMiddleware";
@@ -9,6 +8,7 @@ import { INewRequest } from "../../src/utils/interfaces";
 import { parsePaginator, parseQueryParams, parseRoute } from "../../src/utils/parsers";
 import ProductImageUploader from "../../src/utils/productImageUploader";
 import connectToFirestore from '../../src/connectors/FirestoreConnector';
+import uploader from '../../src/utils/uploader';
 
 
 async function showProduct(req: Request, res: Response) {
@@ -66,7 +66,7 @@ async function editProduct(req: INewRequest, res: Response) {
     
     if (result) {
       const firestoreProvider = new ProductImageUploader(result._id, await connectToFirestore());
-      
+      console.log(req.files);
       const deleteErrors = await firestoreProvider.removeImages(req.body.deletedImages ?? []);
       const uploadErrors = await firestoreProvider.uploadImages(req.files as any[] ?? []);
 
@@ -83,7 +83,7 @@ const routes = Router();
 
 routes.route(parseRoute(__filename))
 .get(showProduct)
-.put(authMiddleware(true), editProduct)
+.put(authMiddleware(true), uploader.array('images[]', 4), editProduct)
 .delete(authMiddleware(true), deleteProduct);
 
 export default routes;

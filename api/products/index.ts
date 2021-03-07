@@ -14,7 +14,7 @@ import slugCreator from '../../src/utils/slugCreator';
 
 async function getAllProducts(req: Request, res: Response) {
   let newQuery = parseQueryParams(req.query, Object.keys(Product.schema.paths));
-  let newFilter = parseSearchFilter(req.query, ['name', 'description', 'category'], ['category']);
+  let newFilter = parseSearchFilter(req.query, ['name', 'description', 'category', '_id'], ['category']);
 
   let products = await Product.find(newFilter, newQuery, 
     parsePaginator(req.query.page, req.query.max_results)

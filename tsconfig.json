@@ -1,20 +1,22 @@
 {
   "compilerOptions": {
-      "module": "commonjs",
-      "esModuleInterop": true,
-      "target": "es6",
-      "noImplicitAny": true,
-      "moduleResolution": "node",
-      "sourceMap": true,
-      "outDir": "dist",
-      "baseUrl": ".",
-      "paths": {
-          "*": [
-              "node_modules/*"
-          ]
-      }
-  },
-  "include": [
-    "**/*",
-  ]
+    "target": "es2017",
+    "module": "commonjs",
+    "allowJs": true,
+    "lib": ["ES6"],
+    "removeComments": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "rootDir": "./src",
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@entities/*": ["./src/entities/*"],
+      "@middlewares/*": ["./src/middlewares/*"],
+      "@connectors/*": ["./src/connectors/*"],
+      "@repositories/*": ["./src/repositories/*"],
+      "@utils/*": ["./src/utils"]
+    }
+  }
 }

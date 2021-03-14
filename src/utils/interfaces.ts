@@ -1,12 +1,12 @@
-import { ObjectId } from "mongoose";
-import { Request } from 'express';
+import { Request } from 'express'
+import { User } from '../entities/User'
 
 export interface IUserProps {
-    _id: ObjectId;
+    _id: any;
     admin?: boolean;
     password?: string;
 }
 
 export interface INewRequest extends Request {
-    user?: IUserProps;
+    user?: User;
 }

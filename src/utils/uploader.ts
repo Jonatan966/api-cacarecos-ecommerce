@@ -1,7 +1,7 @@
-import multer from "multer";
+import multer from 'multer'
 
 const uploader = multer({
-  dest: 'uploads/',
-});
+  dest: 'uploads/'
+})
 
-export default uploader;
+export default uploader

@@ -1,7 +1,5 @@
-/*
- * For a detailed explanation regarding each configuration property and type check, visit:
- * https://jestjs.io/docs/en/configuration.html
- */
+const { compilerOptions } = require('./tsconfig.json')
+const { pathsToModuleNameMapper } = require('ts-jest/utils')
 
 export default {
   bail: true,
@@ -10,5 +8,9 @@ export default {
   preset: 'ts-jest',
   testMatch: [
     '**/__tests__/*.test.ts'
+  ],
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>' }),
+  setupFiles: [
+    'dotenv/config'
   ]
 }

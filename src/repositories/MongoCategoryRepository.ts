@@ -1,4 +1,5 @@
 import { Collection, Db } from 'mongodb'
+import { AppError, errorList } from 'src/utils/errorHandler'
 import { Category } from '../entities/Category'
 
 const antiIdProjection = { projection: { _id: 0 } }
@@ -25,10 +26,10 @@ export class MongoCategoryRepository {
         return result.ops[0]
       }
 
-      throw new Error("Couldn't save this")
+      throw new AppError(errorList.OPERACAO_NAO_EXECUTADA, 500)
     }
 
-    throw new Error('Category already exists')
+    throw new AppError(errorList.ITEM_JA_CADASTRADO)
   }
 
   async index () {
@@ -56,6 +57,6 @@ export class MongoCategoryRepository {
       return true
     }
 
-    throw new Error('This operation could not be performed')
+    throw new AppError(errorList.OPERACAO_NAO_EXECUTADA, 500)
   }
 }

@@ -2,6 +2,7 @@ import { Collection, Db } from 'mongodb'
 
 import { omitJSONFields } from '../utils/omitJSONFields'
 import { User } from '@entities/User'
+import { AppError, errorList } from 'src/utils/errorHandler'
 
 const antiIdProjection = { projection: { _id: 0 } }
 
@@ -26,7 +27,7 @@ export class MongoUsersRepository {
         return omitJSONFields<User>(resultInfo.ops[0], 'password', '_id')
       }
 
-      throw new Error("Couldn't save this")
+      throw new AppError(errorList.OPERACAO_NAO_EXECUTADA, 500)
     }
 
     throw new Error('User already exists')
@@ -42,7 +43,7 @@ export class MongoUsersRepository {
     const user = this.usersCollection.findOne({ id: userId }, antiIdProjection)
 
     if (!user) {
-      throw new Error('User not found')
+      throw new AppError(errorList.ITEM_NAO_ENCONTRADO)
     }
 
     return user

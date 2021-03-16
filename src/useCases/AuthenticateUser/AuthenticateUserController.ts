@@ -7,16 +7,12 @@ export class AuthenticateUserController {
   ) {}
 
   async handle (request: Request, response: Response) {
-    try {
-      const { email, password } = request.body
+    const { email, password } = request.body
 
-      const result = await this.authenticateUserUseCase.execute({
-        email, password
-      })
+    const result = await this.authenticateUserUseCase.execute({
+      email, password
+    })
 
-      return response.send(result)
-    } catch (err) {
-      return response.status(400).json({ error: err.message })
-    }
+    return response.send(result)
   }
 }

@@ -1,3 +1,4 @@
+import { AppError, errorList } from 'src/utils/errorHandler'
 import { MongoCategoryRepository } from '../../repositories/MongoCategoryRepository'
 import { IDeleteategoryRequestDTO } from './DeleteCategoryDTO'
 
@@ -10,7 +11,7 @@ export class DeleteCategoryUseCase {
     const category = await this.mongoCategoryRepository.findById(data.id)
 
     if (!category) {
-      throw new Error('Category not found')
+      throw new AppError(errorList.REGISTRO_NAO_ENCONTRADO)
     }
 
     return (await this.mongoCategoryRepository.delete(data.id))

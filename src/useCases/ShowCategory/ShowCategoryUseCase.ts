@@ -1,3 +1,4 @@
+import { AppError, errorList } from 'src/utils/errorHandler'
 import { MongoCategoryRepository } from '../../repositories/MongoCategoryRepository'
 import { IShowCategoryRequestDTO } from './ShowCategoryDTO'
 
@@ -10,7 +11,7 @@ export class ShowCategoryUseCase {
     const category = await this.mongoCategoryRepository.findById(data.id)
 
     if (!category) {
-      throw new Error('Category not found')
+      throw new AppError(errorList.ITEM_NAO_ENCONTRADO)
     }
 
     return category

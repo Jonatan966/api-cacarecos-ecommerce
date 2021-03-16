@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { AppError, errorList } from 'src/utils/errorHandler'
 
 import { MongoUsersRepository } from '../../repositories/MongoUsersRepository'
 import { IAuthenticateUserRequestDTO } from './AuthenticateUserDTO'
@@ -22,7 +23,6 @@ export class AuthenticateUserUseCase {
         return { token, admin: !!user.admin }
       }
     }
-
-    throw new Error('There are fields missing')
+    throw new AppError(errorList.CAMPOS_FALTANDO)
   }
 }

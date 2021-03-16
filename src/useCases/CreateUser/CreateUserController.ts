@@ -12,19 +12,15 @@ export class CreateUserController {
     let { name, email, password } = request.body
 
     if (name && email && password) {
-      try {
-        password = await bcrypt.hash(password, 7)
+      password = await bcrypt.hash(password, 7)
 
-        const result = await this.createUserUseCase.execute({
-          name,
-          email,
-          password
-        })
+      const result = await this.createUserUseCase.execute({
+        name,
+        email,
+        password
+      })
 
-        return response.status(201).json(result)
-      } catch (err) {
-        return response.status(400).json({ error: err.message })
-      }
+      return response.status(201).json(result)
     }
 
     return response.status(400).json({ error: 'there are fields missing' })

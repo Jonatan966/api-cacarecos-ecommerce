@@ -9,6 +9,7 @@ import { deleteProductController } from './useCases/DeleteProduct'
 import { listCategoriesController } from './useCases/ListCategories'
 import { listProductsController } from './useCases/ListProducts'
 import { showCategoryController } from './useCases/ShowCategory'
+import { showProductController } from './useCases/ShowProduct'
 import { updateProductController } from './useCases/UpdateProduct'
 import { AppError } from './utils/errorHandler'
 
@@ -72,6 +73,11 @@ routes.route('/products/:id')
   .put((request, response) =>
     AppError.errorCatcher(async (req, res) =>
       await updateProductController.handle(req, res)
+    , request, response)
+  )
+  .get((request, response) =>
+    AppError.errorCatcher(async (req, res) =>
+      await showProductController.handle(req, res)
     , request, response)
   )
 

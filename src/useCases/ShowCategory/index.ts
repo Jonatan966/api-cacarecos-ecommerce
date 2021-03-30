@@ -2,12 +2,12 @@ import { mongoCategoryRepository } from '../../repositories'
 import { ShowCategoryController } from './ShowCategoryController'
 import { ShowCategoryUseCase } from './ShowCategoryUseCase'
 
-const showCategoriyUseCase = new ShowCategoryUseCase(
+const showCategoryUseCase = new ShowCategoryUseCase(
   mongoCategoryRepository
 )
 
 const showCategoryController = new ShowCategoryController(
-  showCategoriyUseCase
+  showCategoryUseCase
 )
 
-export { showCategoriyUseCase, showCategoryController }
+export { showCategoryUseCase, showCategoryController }

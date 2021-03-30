@@ -33,7 +33,7 @@ routes.route('/categories/:id')
       await showCategoryController.handle(req, res)
     , request, response)
   )
-  .delete(authMiddleware(), (request, response) =>
+  .delete(authMiddleware(true), (request, response) =>
     AppError.errorCatcher(async (req, res) =>
       await deleteCategoryController.handle(req, res)
     , request, response)
@@ -58,19 +58,19 @@ routes.route('/products')
       await listProductsController.handle(req, res)
     , request, response)
   )
-  .post((request, response) =>
+  .post(authMiddleware(true), (request, response) =>
     AppError.errorCatcher(async (req, res) =>
       await createProductController.handle(req, res)
     , request, response)
   )
 
 routes.route('/products/:id')
-  .delete((request, response) =>
+  .delete(authMiddleware(true), (request, response) =>
     AppError.errorCatcher(async (req, res) =>
       await deleteProductController.handle(req, res)
     , request, response)
   )
-  .put((request, response) =>
+  .put(authMiddleware(true), (request, response) =>
     AppError.errorCatcher(async (req, res) =>
       await updateProductController.handle(req, res)
     , request, response)

@@ -2,10 +2,14 @@ import { Router } from 'express'
 import authMiddleware from './middlewares/AuthMiddleware'
 import { authenticateUserController } from './useCases/AuthenticateUser'
 import { createCategoryController } from './useCases/CreateCategory'
+import { createProductController } from './useCases/CreateProduct'
 import { createUserController } from './useCases/CreateUser'
 import { deleteCategoryController } from './useCases/DeleteCategory'
+import { deleteProductController } from './useCases/DeleteProduct'
 import { listCategoriesController } from './useCases/ListCategories'
+import { listProductsController } from './useCases/ListProducts'
 import { showCategoryController } from './useCases/ShowCategory'
+import { updateProductController } from './useCases/UpdateProduct'
 import { AppError } from './utils/errorHandler'
 
 const routes = Router()
@@ -46,5 +50,29 @@ routes.post('/users/auth', (request, response) =>
     await authenticateUserController.handle(req, res)
   , request, response)
 )
+
+routes.route('/products')
+  .get((request, response) =>
+    AppError.errorCatcher(async (req, res) =>
+      await listProductsController.handle(req, res)
+    , request, response)
+  )
+  .post((request, response) =>
+    AppError.errorCatcher(async (req, res) =>
+      await createProductController.handle(req, res)
+    , request, response)
+  )
+
+routes.route('/products/:id')
+  .delete((request, response) =>
+    AppError.errorCatcher(async (req, res) =>
+      await deleteProductController.handle(req, res)
+    , request, response)
+  )
+  .put((request, response) =>
+    AppError.errorCatcher(async (req, res) =>
+      await updateProductController.handle(req, res)
+    , request, response)
+  )
 
 export { routes }

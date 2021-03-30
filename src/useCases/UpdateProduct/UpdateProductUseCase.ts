@@ -17,12 +17,15 @@ export class UpdateProductUseCase {
         data.slug = slugCreator(data.slug)
       }
 
-      const newProduct = await this.mongoProductsRepository.update({
+      const newProduct = {
         ...product,
-        ...omitJSONFields(data, 'id', 'created_at')
-      })
+        ...omitJSONFields(data, 'id', '_id', 'created_at', 'updated_at'),
+        updated_at: Date.now()
+      }
 
-      return newProduct
+      await this.mongoProductsRepository.update(newProduct)
+
+      return omitJSONFields(newProduct, '_id')
     }
 
     throw new AppError(errorList.ITEM_NAO_ENCONTRADO)

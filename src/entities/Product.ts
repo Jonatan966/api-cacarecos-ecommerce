@@ -22,6 +22,7 @@ export class Product {
   public price: number;
   public units: number;
   public created_at?: number;
+  public updated_at?: number;
 
   constructor (props: Omit<Product, 'id'>, id?: string) {
     Object.assign(this, props)
@@ -30,6 +31,7 @@ export class Product {
       this.id = uuid()
       this.slug = slugCreator(props.slug)
       this.created_at = Date.now()
+      this.updated_at = Date.now()
     }
   }
 }

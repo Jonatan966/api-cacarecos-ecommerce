@@ -9,11 +9,11 @@ export class UpdateProductController {
   async handle (request: Request, response: Response) {
     const { id } = request.params
 
-    await this.updateProductUseCase.execute({
+    const newProduct = await this.updateProductUseCase.execute({
       ...request.body,
       id
     })
 
-    return response.send()
+    return response.json(newProduct)
   }
 }
